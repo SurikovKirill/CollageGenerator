@@ -32,7 +32,13 @@ function generatePage(){
   download.style.backgroundColor = 'orange';
   download.style.color = 'black';
   download.style.fontSize = '16px';
-
+  download.onclick =
+    function () {
+      var link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = 'quote.png';
+      link.click();
+    };
 
   div.appendChild(canvas);
   div.appendChild(download);
