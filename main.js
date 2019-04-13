@@ -1,12 +1,13 @@
 
 generatePage();
+var quote = null;
 var DownloadedImages = 0;
 var countDrawImgs = 0;
 var pctrs = new Array();
 getPictures();
 drawPictures();
-
-
+getText();
+drawText();
 
 
 function generatePage(){
@@ -103,5 +104,61 @@ function drawPictures() {
     ctx.fillRect(0, 0, 600, 600);
   } else {
     setTimeout(drawPictures, 1);
+  }
+}
+
+function getText() {
+  var http = new XMLHttpRequest;
+
+  http.open('GET', 'https://cors-anywhere.herokuapp.com/' +
+    'https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en', true);
+  http.send();
+  http.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(http.responseText);
+      quote = JSON.parse(http.responseText)['quoteText'];
+    }
+  }
+}
+
+function formateStrings(context, text, x, y, maxWidth, lineHeight) {
+  var
+    words = text.split(" "),
+    countWords = words.length,
+    countRaws = Math.floor(context.measureText(text).width / 550),
+    line = "";
+
+  y -= countRaws * (lineHeight / 2);
+  for (var n = 0; n < countWords; n++) {
+    var
+      testLine = line + words[n] + " ",
+      testWidth = context.measureText(testLine).width;
+
+    if (testWidth > maxWidth) {
+      context.fillText(line, x, y);
+      line = words[n] + " ";
+      y += lineHeight;
+    }
+    else {
+      line = testLine;
+    }
+  }
+  context.fillText(line, x, y);
+}
+
+function drawText() {
+  if (quote != null && countDrawImgs == 4) {
+    var context = canvas.getContext('2d');
+
+    context.fillStyle = 'azure';
+    context.font = '22pt Segoe UI';
+    context.textAlign = 'center';
+    var x = canvas.width / 2,
+      y = canvas.height / 2 + 11;
+
+    formateStrings(context, quote, x, y, 550, 40);
+  }
+  else {
+    setTimeout(drawText, 1);
   }
 }
