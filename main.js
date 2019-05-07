@@ -90,7 +90,7 @@ function drawPictures() {
     getText();
 }
 
-async function getText() {
+function getText() {
   var http = new XMLHttpRequest;
   http.open('GET', 'https://cors-anywhere.herokuapp.com/' +
     'https://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=ru', true);
